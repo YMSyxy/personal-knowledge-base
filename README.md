@@ -19,6 +19,7 @@
 | CI/CD | GitHub Actions |
 
 ## 目录结构
+```
 personal-knowledge-base/
 ├── backend/
 │   ├── modules/
@@ -58,6 +59,7 @@ personal-knowledge-base/
 │       └── components/      # 组件
 ├── README.md
 └── .gitignore
+```
 
 ## 如何本地运行
 
