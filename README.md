@@ -105,7 +105,12 @@ npm run dev
 ## 项目文档
 - 产品需求文档：见 [Issue #1](../../issues/1)
 - 架构设计文档：见 [Issue #2](../../issues/2)
-- 模块子 Issue：见 [Issues 列表](../../issues)
+- 模块子 Issue：
+  - [知识收录 #3](../../issues/3)
+  - [检索 #4](../../issues/4)
+  - [问答 #5](../../issues/5)
+  - [Agent #6](../../issues/6)
+  - [知识管理 #7](../../issues/7)
 
 ## 开发规范
 - 不在 main 分支直接 commit
