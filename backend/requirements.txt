@@ -7,3 +7,4 @@ pypdf
 beautifulsoup4
 pytest
 numpy
+python-multipart
