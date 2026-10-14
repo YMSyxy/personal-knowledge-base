@@ -10,7 +10,7 @@
 |---|---|
 | 前端 | React + Vite + TypeScript |
 | 后端 | Python 3.11 + FastAPI |
-| 数据库 | PostgreSQL 16 + pgvector |
+| 数据库 | SQLite（开发阶段）→ PostgreSQL + pgvector（生产计划） |
 | ORM | SQLAlchemy 2.0 |
 | 检索 | 向量检索（pgvector）+ 关键词检索（tsvector） |
 | LLM | DeepSeek API |
@@ -64,23 +64,15 @@ personal-knowledge-base/
 ## 如何本地运行
 
 ### 依赖
+
 - Python 3.11+
-- PostgreSQL 16 + pgvector 扩展
-- Node.js 18+
-- Docker
+- Node.js 18+（前端）
 
-### 1. 启动数据库
-用 Docker 起 PostgreSQL + pgvector：
+### 1. 数据库
 
-```bash
-docker run -d \
-  --name pkb-postgres \
-  -e POSTGRES_PASSWORD=postgres \
-  -e POSTGRES_DB=pkb \
-  -p 5432:5432 \
-  pgvector/pgvector:pg16
-```
-这会启动一个带 pgvector 扩展的 PostgreSQL，端口 5432。
+开发阶段使用 SQLite，**无需额外启动**。数据库文件会自动创建在 `backend/pkb.db`。
+
+> 生产环境计划迁移到 PostgreSQL + pgvector。
 
 ### 2. 启动后端
 ```bash
