@@ -27,3 +27,8 @@ Thumbs.db
 # 前端（以后加）
 node_modules/
 frontend/dist/
+
+# Database
+*.db
+pkb.db
+backend/pkb.db
