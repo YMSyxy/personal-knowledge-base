@@ -8,3 +8,4 @@ beautifulsoup4
 pytest
 numpy
 python-multipart
+jieba
