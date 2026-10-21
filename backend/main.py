@@ -1,17 +1,13 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware  # 新增
-
+from fastapi.middleware.cors import CORSMiddleware
 from shared.db import init_db
-from modules.ingest.controller.routes import router as ingest_router
-from modules.retrieve.controller.routes import router as retrieve_router
-from modules.qa.controller.routes import router as qa_router
+from api.router import api_router  # 统一路由收口
 
 app = FastAPI(title="Personal Knowledge Base")
 
-# 新增 CORS 跨域配置
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], 
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -19,9 +15,8 @@ app.add_middleware(
 
 init_db()
 
-app.include_router(ingest_router)
-app.include_router(retrieve_router)
-app.include_router(qa_router)
+# 统一注册，前缀 /api/v1
+app.include_router(api_router, prefix="/api/v1")
 
 @app.get("/health")
 def health():

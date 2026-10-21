@@ -1,22 +1,36 @@
 from sqlalchemy.orm import Session
-
 from modules.retrieve.service.search import search
 from shared.llm import chat_completion
 
+async def rewrite_query(original_query: str) -> str:
+    """Agent 工作流：把口语化问题改写成专业检索词"""
+    prompt = f"请将以下用户问题改写为适合搜索引擎检索的专业关键词，只输出改写后的词，不要解释：\n{original_query}"
+    try:
+        rewritten = await chat_completion(prompt)
+        return rewritten.strip()
+    except Exception:
+        return original_query
 
 async def ask_question(db: Session, question: str, top_k: int = 3) -> dict:
-    """问答入口：检索 -> 拼 Prompt -> 调 LLM -> 返回"""
-    # 1. 检索
-    search_result = search(db, question, top_k=top_k)
+    """
+    Agent 核心编排：改写 -> 检索 -> 生成 -> 溯源
+    """
+    # 1. Agent 决定是否改写（为了演示效果，我们每次都走一遍改写）
+    rewritten_query = await rewrite_query(question)
+
+    # 2. 调度 retrieve 模块
+    search_result = search(db, rewritten_query, top_k=top_k)
     chunks = search_result.get("results", [])
 
+    # 3. 严格防幻觉拦截
     if not chunks:
         return {
             "answer": "抱歉，知识库中没有找到与您问题相关的内容，我无法回答。",
             "sources": [],
+            "rewritten_query": rewritten_query
         }
 
-    # 2. 拼装 Prompt
+    # 4. 拼装 Prompt
     context_text = ""
     for i, chunk in enumerate(chunks):
         context_text += f"[{i + 1}] {chunk['content']}\n\n"
@@ -31,10 +45,10 @@ async def ask_question(db: Session, question: str, top_k: int = 3) -> dict:
 用户问题：{question}
 """
 
-    # 3. 调用 LLM
+    # 5. 调用 LLM
     answer = await chat_completion(prompt)
 
-    # 4. 返回结果
+    # 6. 提取溯源信息
     sources = [
         {
             "chunk_id": c["chunk_id"],
@@ -47,4 +61,5 @@ async def ask_question(db: Session, question: str, top_k: int = 3) -> dict:
     return {
         "answer": answer,
         "sources": sources,
+        "rewritten_query": rewritten_query
     }
